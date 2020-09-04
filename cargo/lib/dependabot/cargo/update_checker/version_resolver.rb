@@ -15,8 +15,10 @@ module Dependabot
           /Unable to update (?<url>.*?)$/.freeze
         BRANCH_NOT_FOUND_REGEX =
           /#{UNABLE_TO_UPDATE}.*to find branch `(?<branch>[^`]+)`/m.freeze
+        REVSPEC_PATTERN = /revspec '.*' not found/.freeze
+        OBJECT_PATTERN = /object not found - no match for id \(.*\)/.freeze
         REF_NOT_FOUND_REGEX =
-          /#{UNABLE_TO_UPDATE}.*revspec '.*' not found/m.freeze
+          /#{UNABLE_TO_UPDATE}.*(#{REVSPEC_PATTERN}|#{OBJECT_PATTERN})/m.freeze
 
         def initialize(dependency:, credentials:,
                        original_dependency_files:, prepared_dependency_files:)
@@ -79,6 +81,7 @@ module Dependabot
         end
 
         # rubocop:disable Metrics/PerceivedComplexity
+        # rubocop:disable Metrics/CyclomaticComplexity
         def better_specification_needed?(error)
           return false if @custom_specification
           return false unless error.message.match?(/specification .* is ambigu/)
@@ -107,7 +110,7 @@ module Dependabot
           @custom_specification = spec_options.first
           true
         end
-
+        # rubocop:enable Metrics/CyclomaticComplexity
         # rubocop:enable Metrics/PerceivedComplexity
 
         def dependency_spec
@@ -169,7 +172,6 @@ module Dependabot
         end
 
         # rubocop:disable Metrics/AbcSize
-        # rubocop:disable Metrics/CyclomaticComplexity
         # rubocop:disable Metrics/PerceivedComplexity
         # rubocop:disable Metrics/MethodLength
         def handle_cargo_errors(error)
@@ -238,7 +240,6 @@ module Dependabot
           raise error
         end
         # rubocop:enable Metrics/AbcSize
-        # rubocop:enable Metrics/CyclomaticComplexity
         # rubocop:enable Metrics/PerceivedComplexity
         # rubocop:enable Metrics/MethodLength
 

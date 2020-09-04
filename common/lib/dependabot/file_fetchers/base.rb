@@ -67,6 +67,12 @@ module Dependabot
         raise unless e.message.include?("Repository is empty")
       end
 
+      # Returns the path to the cloned repo
+      def clone_repo_contents(target_directory: nil)
+        @clone_repo_contents ||=
+          _clone_repo_contents(target_directory: target_directory)
+      end
+
       private
 
       def fetch_file_if_present(filename, fetch_submodules: false)
@@ -417,6 +423,24 @@ module Dependabot
         linked_dirs.
           select { |k| path.match?(%r{^#{Regexp.quote(k)}(/|$)}) }.
           max_by(&:length)
+      end
+
+      def _clone_repo_contents(target_directory:)
+        SharedHelpers.with_git_configured(credentials: credentials) do
+          path = target_directory || File.join("tmp", source.repo)
+          # Assume we're retrying the same branch, or that a `target_directory`
+          # is specified when retrying a different branch.
+          return path if Dir.exist?(File.join(path, ".git"))
+
+          FileUtils.mkdir_p(path)
+          br_opt = " --branch=#{source.branch} --single-branch" if source.branch
+          SharedHelpers.run_shell_command(
+            <<~CMD
+              git clone --no-tags --no-recurse-submodules --depth=1#{br_opt} #{source.url} #{path}
+            CMD
+          )
+          path
+        end
       end
 
       def client_for_provider
