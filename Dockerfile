@@ -201,11 +201,13 @@ ENV DEPENDABOT_NATIVE_HELPERS_PATH="/opt" \
   PATH="$PATH:/opt/terraform/bin:/opt/python/bin:/opt/go_modules/bin:/opt/dep/bin" \
   MIX_HOME="/opt/hex/mix"
 
-RUN bash /opt/terraform/helpers/build /opt/terraform && \
-  bash /opt/python/helpers/build /opt/python && \
-  bash /opt/dep/helpers/build /opt/dep && \
-  bash /opt/go_modules/helpers/build /opt/go_modules && \
-  bash /opt/npm_and_yarn/helpers/build /opt/npm_and_yarn && \
-  bash /opt/paket/helpers/build /opt/paket && \
-  bash /opt/hex/helpers/build /opt/hex && \
-  bash /opt/composer/helpers/build /opt/composer
+# TEMP
+# RUN bash /opt/terraform/helpers/build /opt/terraform && \
+#   bash /opt/python/helpers/build /opt/python && \
+#   bash /opt/dep/helpers/build /opt/dep && \
+#   bash /opt/go_modules/helpers/build /opt/go_modules && \
+#   bash /opt/npm_and_yarn/helpers/build /opt/npm_and_yarn && \
+#   bash /opt/paket/helpers/build /opt/paket && \
+#   bash /opt/hex/helpers/build /opt/hex && \
+#   bash /opt/composer/helpers/build /opt/composer && \
+RUN bash /opt/paket/helpers/build /opt/paket
