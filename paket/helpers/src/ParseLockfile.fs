@@ -48,3 +48,4 @@ module ParseDepedenciesAndLockFile =
             PackageRequirement= requirement }
         )
     )
+    |> List.rev

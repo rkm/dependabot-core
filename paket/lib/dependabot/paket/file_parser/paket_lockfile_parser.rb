@@ -30,6 +30,8 @@ module Dependabot
           paket_dependencies.each do |paket_dependency|
             paket_lock = paket_locks.find{|i| i.directory.eql? paket_dependency.directory}
             parse_paket_dependency_and_lock(paket_dependency, paket_lock).each do |details|
+
+              # TODO(rkm 2020-09-05) Check these
               # next unless semver_version_for(details["version"])
               # next if alias_package?(req)
 
